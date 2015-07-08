@@ -1,1 +1,0 @@
-msbuild tgui3.sln %*
