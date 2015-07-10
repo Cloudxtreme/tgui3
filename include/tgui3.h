@@ -5,9 +5,13 @@
 #include <vector>
 
 #ifdef _MSC_VER
-#define EXPORT __declspec(dllexport)
+#ifdef TGUI_LIB_BUILD
+#define TGUI_DECLSPEC __declspec(dllexport)
+#define TGUI_EXPIMP
 #else
-#define EXPORT __declspec(dllimport)
+#define TGUI_DECLSPEC __declspec(dllimport)
+#define TGUI_EXPIMP extern
+#endif
 #endif
 
 enum TGUI_Event_Type {
@@ -42,12 +46,12 @@ struct TGUI_Event {
 class TGUI;
 class TGUI_Widget;
 
-EXPORT void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height);
-EXPORT TGUI_Event tgui_get_relative_event(TGUI_Widget *widget, TGUI_Event *event);
+TGUI_DECLSPEC void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height);
+TGUI_DECLSPEC TGUI_Event tgui_get_relative_event(TGUI_Widget *widget, TGUI_Event *event);
 
 // a GUI hierarchy
-class EXPORT TGUI {
-	friend void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height);
+class TGUI_DECLSPEC TGUI {
+	friend TGUI_DECLSPEC void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height);
 
 public:
 	TGUI(TGUI_Widget *main_widget, int w, int h);
@@ -80,9 +84,14 @@ private:
 	int offset_x, offset_y;
 };
 
-class EXPORT TGUI_Widget {
-	friend void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height);
-	friend class TGUI;
+class TGUI_Widget;
+
+class TGUI_Widget;
+TGUI_EXPIMP template class TGUI_DECLSPEC std::vector<TGUI_Widget *>;
+
+class TGUI_DECLSPEC TGUI_Widget {
+	friend TGUI_DECLSPEC void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height);
+	friend class TGUI_DECLSPEC TGUI;
 
 public:
 	/* Percentage sizes can be negative or positive: positive means % of parent size,
@@ -377,7 +386,7 @@ enum
 	TGUIK_SLEEP = SDLK_SLEEP,
 };
 
-EXPORT TGUI_Event tgui_sdl_convert_event(SDL_Event *sdl_event);
+TGUI_DECLSPEC TGUI_Event tgui_sdl_convert_event(SDL_Event *sdl_event);
 #endif // WITH_SDL
 
 #endif // TGUI3_H
