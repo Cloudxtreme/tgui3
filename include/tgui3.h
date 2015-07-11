@@ -11,6 +11,8 @@
 #else
 #define TGUI_EXPORT __declspec(dllimport)
 #endif
+#else
+#define TGUI_EXPORT
 #endif
 
 enum TGUI_Event_Type {
@@ -136,11 +138,7 @@ protected:
 };
 
 #ifdef WITH_SDL
-#ifdef TRENTS_BUILD
-#include <SDL/SDL.h>
-#else
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h>
 
 enum
 {

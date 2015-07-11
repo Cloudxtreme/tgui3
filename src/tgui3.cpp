@@ -1,10 +1,12 @@
+#include <cmath>
+
 #include "tgui3.h"
 
 TGUI::TGUI(TGUI_Widget *main_widget, int w, int h) :
 	main_widget(main_widget),
 	w(w),
 	h(h),
-	focus(NULL),
+	focus(0),
 	offset_x(0),
 	offset_y(0)
 {
@@ -34,7 +36,7 @@ void TGUI::handle_event(TGUI_Event *event)
 {
 	int x = 0;
 	int y = 0;
-	if (event->type == TGUI_JOY_AXIS && fabs(event->joystick.value) > 0.25f) {
+	if (event->type == TGUI_JOY_AXIS && fabsf(event->joystick.value) > 0.25f) {
 		if (event->joystick.axis == 0) {
 			if (event->joystick.value < 0) {
 				x = -1;
@@ -71,7 +73,7 @@ void TGUI::handle_event(TGUI_Event *event)
 		handle_event(event, main_widget);
 	}
 	else {
-		TGUI_Widget *start = focus == NULL ? main_widget : focus;
+		TGUI_Widget *start = focus == 0 ? main_widget : focus;
 		TGUI_Widget *best = start;
 		int best_score = INT_MAX;
 		int best_grade = 2;
@@ -173,7 +175,7 @@ TGUI_Widget *TGUI::get_event_owner(TGUI_Event *event, TGUI_Widget *widget)
 {
 	for (size_t i = 0; i < widget->children.size(); i++) {
 		TGUI_Widget *d = get_event_owner(event, widget->children[i]);
-		if (d != NULL) {
+		if (d != 0) {
 			return d;
 		}
 	}
@@ -187,7 +189,7 @@ TGUI_Widget *TGUI::get_event_owner(TGUI_Event *event, TGUI_Widget *widget)
 		return widget;
 	}
 
-	return NULL;
+	return 0;
 }
 
 void TGUI::handle_event(TGUI_Event *event, TGUI_Widget *widget)
@@ -295,7 +297,7 @@ void TGUI::find_focus(TGUI_Widget *start, TGUI_Widget *&current_best, TGUI_Widge
 }
 
 TGUI_Widget::TGUI_Widget(int w, int h) :
-	parent(NULL),
+	parent(0),
 	percent_x(false),
 	percent_y(false),
 	w(w),
@@ -310,7 +312,7 @@ TGUI_Widget::TGUI_Widget(int w, int h) :
 }
 
 TGUI_Widget::TGUI_Widget(float percent_w, float percent_h) :
-	parent(NULL),
+	parent(0),
 	percent_x(true),
 	percent_y(true),
 	percent_w(percent_w),
@@ -325,7 +327,7 @@ TGUI_Widget::TGUI_Widget(float percent_w, float percent_h) :
 }
 
 TGUI_Widget::TGUI_Widget(int w, float percent_h) :
-	parent(NULL),
+	parent(0),
 	percent_x(false),
 	percent_y(true),
 	percent_h(percent_h),
@@ -340,7 +342,7 @@ TGUI_Widget::TGUI_Widget(int w, float percent_h) :
 }
 
 TGUI_Widget::TGUI_Widget(float percent_w, int h) :
-	parent(NULL),
+	parent(0),
 	percent_x(true),
 	percent_y(false),
 	percent_w(percent_w),
@@ -439,10 +441,10 @@ int TGUI_Widget::get_right_pos()
 		return 0;
 	}
 	int parent_width;
-	tgui_get_size(parent->parent, parent, &parent_width, NULL);
+	tgui_get_size(parent->parent, parent, &parent_width, 0);
 	parent_width += parent->padding_left + parent->padding_right;
 	int width;
-	tgui_get_size(parent, this, &width, NULL);
+	tgui_get_size(parent, this, &width, 0);
 	width += padding_left + padding_right;
 	int right = 0;
 	for (size_t i = 0; i < parent->children.size(); i++) {
@@ -452,7 +454,7 @@ int TGUI_Widget::get_right_pos()
 		}
 		if (d->float_right) {
 			int w2;
-			tgui_get_size(parent, d, &w2, NULL);
+			tgui_get_size(parent, d, &w2, 0);
 			w2 += d->padding_left + d->padding_right;
 			right += w2;
 		}
@@ -462,7 +464,7 @@ int TGUI_Widget::get_right_pos()
 
 void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height)
 {
-	if (parent == NULL) {
+	if (parent == 0) {
 		*width = widget->gui->w;
 		*height = widget->gui->h;
 	}
@@ -485,7 +487,7 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 							}
 							else {
 								int w2;
-								tgui_get_size(parent, d, &w2, NULL);
+								tgui_get_size(parent, d, &w2, 0);
 								w2 += d->padding_left + d->padding_right;
 								this_w = w2;
 							}
@@ -532,7 +534,7 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 						int this_h = 0;
 						float this_percent = 0.0f;
 						TGUI_Widget *d = parent->children[i];
-						tgui_get_size(parent, d, &this_w, NULL);
+						tgui_get_size(parent, d, &this_w, 0);
 						this_w += d->padding_left + d->padding_right;
 						if (d->percent_y) {
 							if (d->percent_h < 0) {
@@ -540,7 +542,7 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 							}
 							else {
 								int h2;
-								tgui_get_size(parent, d, NULL, &h2);
+								tgui_get_size(parent, d, 0, &h2);
 								h2 += d->padding_top + d->padding_bottom;
 								this_h = h2;
 							}

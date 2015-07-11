@@ -1,16 +1,15 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 2.8)
 project(tgui3 CXX)
 
 option(TRENTS_BUILD "Build my way" off)
 
 include_directories("include")
 
-if(NOT ("${USER_INCLUDE_PATH}" STREQUAL ""))
-	include_directories(${USER_INCLUDE_PATH})
-endif()
-if(NOT ("${USER_LIBRARY_PATH}" STREQUAL ""))
-	link_directories(${USER_LIBRARY_PATH})
-endif()
+set(USER_INCLUDE_PATH "" CACHE FILEPATH "Any extra include directories you want")
+set(USER_LIBRARY_PATH "" CACHE FILEPATH "Any extra library directories you want")
+
+include_directories(${USER_INCLUDE_PATH})
+link_directories(${USER_LIBRARY_PATH})
 
 if(WIN32)
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /D_CRT_SECURE_NO_WARNINGS /D_WIN32_WINNT=0x501 /DWITH_SDL /DTGUI_LIB_BUILD")
@@ -18,6 +17,14 @@ if(WIN32)
 	if(TRENTS_BUILD)
 		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /DTRENTS_BUILD")
 		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /DTRENTS_BUILD")
+	endif()
+else()
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWITH_SDL -DTGUI_LIB_BUILD")
+	if(TRENTS_BUILD)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTRENTS_BUILD")
+	endif()
+	if(CMAKE_BUILD_TYPE MATCHES "Debug")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTGUI_DEBUG")
 	endif()
 endif()
 
