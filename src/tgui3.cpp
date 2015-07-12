@@ -14,6 +14,20 @@ TGUI::TGUI(TGUI_Widget *main_widget, int w, int h) :
 	focus_something();
 }
 
+TGUI::~TGUI()
+{
+	destroy(main_widget);
+}
+
+void TGUI::destroy(TGUI_Widget *widget)
+{
+	for (size_t i = 0; i < widget->children.size(); i++) {
+		destroy(widget->children[i]);
+	}
+
+	delete widget;
+}
+
 void TGUI::layout()
 {
 	set_sizes(main_widget);
@@ -357,6 +371,10 @@ TGUI_Widget::TGUI_Widget(float percent_w, int h) :
 	float_right(false),
 	centered_x(false),
 	accepts_focus(false)
+{
+}
+
+TGUI_Widget::~TGUI_Widget()
 {
 }
 

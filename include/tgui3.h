@@ -56,6 +56,7 @@ class TGUI_EXPORT TGUI {
 
 public:
 	TGUI(TGUI_Widget *main_widget, int w, int h);
+	~TGUI();
 
 	void layout();
 	void resize(int w, int h);
@@ -70,6 +71,7 @@ public:
 	TGUI_Widget *get_event_owner(TGUI_Event *event);
 
 private:
+	void destroy(TGUI_Widget *widget);
 	void set_sizes(TGUI_Widget *widget);
 	void set_positions(TGUI_Widget *widget, int x, int y);
 	void draw(TGUI_Widget *widget);
@@ -100,6 +102,7 @@ public:
 	TGUI_Widget(float percent_w, float percent_h);
 	TGUI_Widget(int w, float percent_h);
 	TGUI_Widget(float percent_w, int h);
+	virtual ~TGUI_Widget();
 
 	virtual void draw() {}
 	virtual void handle_event(TGUI_Event *event) {}
