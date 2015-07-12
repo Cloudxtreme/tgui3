@@ -699,7 +699,7 @@ TGUI_Event tgui_sdl_convert_event(SDL_Event *sdl_event)
 			break;
 	}
 
-#ifdef TGUI_DEBUG
+#ifdef TGUI_DEBUG_XXX
 	switch (event.type) {
 		case TGUI_KEY_DOWN:
 		case TGUI_KEY_UP:
