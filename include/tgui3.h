@@ -4,7 +4,7 @@
 #include <climits>
 #include <vector>
 
-#ifdef _MSC_VER
+#ifdef TGUI_WINDOWS
 #pragma warning(disable : 4251)
 #ifdef TGUI_LIB_BUILD
 #define TGUI_EXPORT __declspec(dllexport)
