@@ -108,6 +108,7 @@ public:
 	void set_padding(int padding);
 	void set_padding(int left, int right, int top, int bottom);
 	void set_float_right(bool float_right);
+	void set_centered_x(bool centered_x);
 	void set_accepts_focus(bool accepts_focus);
 
 	TGUI_Widget *get_parent();
@@ -131,6 +132,7 @@ protected:
 	std::vector<TGUI_Widget *> children;
 	int padding_left, padding_right, padding_top, padding_bottom;
 	bool float_right;
+	bool centered_x;
 	bool accepts_focus;
 
 	int calculated_x, calculated_y;
