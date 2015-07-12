@@ -261,10 +261,10 @@ void TGUI::focus_distance(TGUI_Widget *start, TGUI_Widget *widget, int dir_x, in
 	int dy = widget_cy - cy;
 	int dist = int(sqrtf(float(dx*dx + dy*dy)));
 
-	if (!(widget_x1 > box_x2 || widget_x2 < box_x1 || widget_y1 > box_y2 || widget_y2 < box_y1)) {
+	if (!((widget_x1 > box_x2) || (widget_x2 < box_x1) || (widget_y1 > box_y2) || (widget_y2 < box_y1))) {
 		grade = 0;
 	}
-	else if (dir_x < 0 && widget_cx < cx || dir_x > 0 && widget_cx > cx || dir_y < 0 && widget_cy < cy || dir_y > 0 && widget_cy > cy) {
+	else if (((dir_x < 0) && (widget_cx < cx)) || ((dir_x > 0) && (widget_cx > cx)) || ((dir_y < 0) && (widget_cy < cy)) || ((dir_y > 0) && (widget_cy > cy))) {
 		grade = 1;
 	}
 	else {
