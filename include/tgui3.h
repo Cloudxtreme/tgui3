@@ -112,6 +112,7 @@ public:
 	void set_padding(int left, int right, int top, int bottom);
 	void set_float_right(bool float_right);
 	void set_centered_x(bool centered_x);
+	void set_clear_floats(bool clear_floats);
 	void set_accepts_focus(bool accepts_focus);
 
 	TGUI_Widget *get_parent();
@@ -140,6 +141,8 @@ protected:
 
 	int calculated_x, calculated_y;
 	int calculated_w, calculated_h;
+
+	bool clear_floats;
 };
 
 #ifdef WITH_SDL

@@ -326,6 +326,7 @@ TGUI_Widget::TGUI_Widget(int w, int h) :
 	padding_bottom(0),
 	float_right(false),
 	centered_x(false),
+	clear_floats(false),
 	accepts_focus(false)
 {
 }
@@ -342,6 +343,7 @@ TGUI_Widget::TGUI_Widget(float percent_w, float percent_h) :
 	padding_bottom(0),
 	float_right(false),
 	centered_x(false),
+	clear_floats(false),
 	accepts_focus(false)
 {
 }
@@ -358,6 +360,7 @@ TGUI_Widget::TGUI_Widget(int w, float percent_h) :
 	padding_bottom(0),
 	float_right(false),
 	centered_x(false),
+	clear_floats(false),
 	accepts_focus(false)
 {
 }
@@ -374,6 +377,7 @@ TGUI_Widget::TGUI_Widget(float percent_w, int h) :
 	padding_bottom(0),
 	float_right(false),
 	centered_x(false),
+	clear_floats(false),
 	accepts_focus(false)
 {
 }
@@ -409,6 +413,11 @@ void TGUI_Widget::set_float_right(bool float_right)
 void TGUI_Widget::set_centered_x(bool centered_x)
 {
 	this->centered_x = centered_x;
+}
+
+void TGUI_Widget::set_clear_floats(bool clear_floats)
+{
+	this->clear_floats = clear_floats;
 }
 
 void TGUI_Widget::set_accepts_focus(bool accepts_focus)
@@ -483,6 +492,9 @@ int TGUI_Widget::get_right_pos()
 	int right = 0;
 	for (size_t i = 0; i < parent->children.size(); i++) {
 		TGUI_Widget *d = parent->children[i];
+		if (d->clear_floats) {
+			right = 0;
+		}
 		if (d == this) {
 			break;
 		}
