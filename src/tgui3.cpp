@@ -31,7 +31,7 @@ void TGUI::destroy(TGUI_Widget *widget)
 void TGUI::layout()
 {
 	set_sizes(main_widget);
-	set_positions(main_widget, offset_x, offset_y);
+	set_positions(main_widget, offset_x+main_widget->padding_left, offset_y+main_widget->padding_top);
 }
 
 void TGUI::resize(int w, int h)
@@ -487,7 +487,10 @@ int TGUI_Widget::get_right_pos()
 	tgui_get_size(parent, this, &width, 0);
 	width += padding_left + padding_right;
 	if (centered_x) {
-		return parent_width / 2 - width / 2;
+		int parent_center = parent->padding_right + (parent_width - parent->padding_left - parent->padding_right) / 2;
+		int widget_center = width / 2;
+		int offset = parent->padding_left;
+		return parent_width - parent_center - widget_center - offset;
 	}
 	int right = 0;
 	for (size_t i = 0; i < parent->children.size(); i++) {
