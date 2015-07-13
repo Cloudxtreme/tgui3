@@ -327,7 +327,11 @@ TGUI_Widget::TGUI_Widget(int w, int h) :
 	float_right(false),
 	centered_x(false),
 	clear_floats(false),
-	accepts_focus(false)
+	accepts_focus(false),
+	calculated_x(-1),
+	calculated_y(-1),
+	calculated_w(-1),
+	calculated_h(-1)
 {
 }
 
@@ -344,7 +348,11 @@ TGUI_Widget::TGUI_Widget(float percent_w, float percent_h) :
 	float_right(false),
 	centered_x(false),
 	clear_floats(false),
-	accepts_focus(false)
+	accepts_focus(false),
+	calculated_x(-1),
+	calculated_y(-1),
+	calculated_w(-1),
+	calculated_h(-1)
 {
 }
 
@@ -361,7 +369,11 @@ TGUI_Widget::TGUI_Widget(int w, float percent_h) :
 	float_right(false),
 	centered_x(false),
 	clear_floats(false),
-	accepts_focus(false)
+	accepts_focus(false),
+	calculated_x(-1),
+	calculated_y(-1),
+	calculated_w(-1),
+	calculated_h(-1)
 {
 }
 
@@ -378,7 +390,11 @@ TGUI_Widget::TGUI_Widget(float percent_w, int h) :
 	float_right(false),
 	centered_x(false),
 	clear_floats(false),
-	accepts_focus(false)
+	accepts_focus(false),
+	calculated_x(-1),
+	calculated_y(-1),
+	calculated_w(-1),
+	calculated_h(-1)
 {
 }
 
@@ -447,11 +463,17 @@ int TGUI_Widget::get_y()
 
 int TGUI_Widget::get_width()
 {
+	if (calculated_w < 0) {
+		return w;
+	}
 	return calculated_w;
 }
 
 int TGUI_Widget::get_height()
 {
+	if (calculated_h < 0) {
+		return h;
+	}
 	return calculated_h;
 }
 
