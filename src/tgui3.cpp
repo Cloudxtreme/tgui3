@@ -120,7 +120,11 @@ TGUI_Widget *TGUI::get_focus()
 
 TGUI_Widget *TGUI::get_event_owner(TGUI_Event *event)
 {
-	return get_event_owner(event, main_widget);
+	TGUI_Widget *widget = get_event_owner(event, main_widget);
+#ifdef TGUI_DEBUG
+	printf("event owner: %p\n", widget);
+#endif
+	return widget;
 }
 
 void TGUI::set_sizes(TGUI_Widget *widget)
@@ -699,7 +703,7 @@ TGUI_Event tgui_sdl_convert_event(SDL_Event *sdl_event)
 			break;
 	}
 
-#ifdef TGUI_DEBUG_XXX
+#ifdef TGUI_DEBUG
 	switch (event.type) {
 		case TGUI_KEY_DOWN:
 		case TGUI_KEY_UP:
