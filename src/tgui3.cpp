@@ -82,6 +82,12 @@ void TGUI::handle_event(TGUI_Event *event)
 			y = 1;
 		}
 	}
+	else if (event->type == TGUI_MOUSE_DOWN) {
+		TGUI_Widget *widget = get_event_owner(event);
+		if (widget && widget->accepts_focus) {
+			focus = widget;
+		}
+	}
 
 	if (x == 0 && y == 0) {
 		handle_event(event, main_widget);
