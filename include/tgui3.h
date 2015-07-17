@@ -110,12 +110,24 @@ public:
 	virtual void handle_event(TGUI_Event *event) {}
 
 	void set_parent(TGUI_Widget *widget);
-	void set_padding(int padding);
-	void set_padding(int left, int right, int top, int bottom);
 	void set_float_right(bool float_right);
+	void set_float_bottom(bool float_bottom);
 	void set_centered_x(bool centered_x);
-	void set_clear_floats(bool clear_floats);
+	void set_centered_y(bool centered_y);
+	void set_clear_float_x(bool clear_float_x);
+	void set_clear_float_y(bool clear_float_y);
 	void set_accepts_focus(bool accepts_focus);
+
+	void set_padding_left(int padding);
+	void set_padding_left(float percent_padding);
+	void set_padding_right(int padding);
+	void set_padding_right(float percent_padding);
+	void set_padding_top(int padding);
+	void set_padding_top(float percent_padding);
+	void set_padding_bottom(int padding);
+	void set_padding_bottom(float percent_padding);
+	void set_padding(int padding);
+	void set_padding(float percent_padding);
 
 	TGUI_Widget *get_parent();
 	int get_x();
@@ -129,6 +141,7 @@ public:
 
 protected:
 	int get_right_pos();
+	int get_bottom_pos();
 
 	TGUI *gui;
 	TGUI_Widget *parent;
@@ -136,15 +149,20 @@ protected:
 	float percent_w, percent_h;
 	int w, h;
 	std::vector<TGUI_Widget *> children;
+	bool use_percent_padding_left, use_percent_padding_right, use_percent_padding_top, use_percent_padding_bottom;
+	float percent_padding_left, percent_padding_right, percent_padding_top, percent_padding_bottom;
 	int padding_left, padding_right, padding_top, padding_bottom;
 	bool float_right;
+	bool float_bottom;
 	bool centered_x;
+	bool centered_y;
 	bool accepts_focus;
 
 	int calculated_x, calculated_y;
 	int calculated_w, calculated_h;
 
-	bool clear_floats;
+	bool clear_float_x;
+	bool clear_float_y;
 };
 
 #ifdef WITH_SDL
