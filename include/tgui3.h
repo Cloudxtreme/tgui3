@@ -69,6 +69,8 @@ public:
 
 	TGUI_Widget *get_focus();
 	TGUI_Widget *get_event_owner(TGUI_Event *event);
+	int get_width();
+	int get_height();
 
 private:
 	void destroy(TGUI_Widget *widget);
