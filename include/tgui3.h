@@ -34,8 +34,8 @@ struct TGUI_Event {
 	} keyboard;
 	struct TGUI_Event_Mouse {
 		int button;
-		int x;
-		int y;
+		float x;
+		float y;
 	} mouse;
 	struct TGUI_Event_Joystick {
 		int button;

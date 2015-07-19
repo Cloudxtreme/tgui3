@@ -881,20 +881,20 @@ TGUI_Event tgui_sdl_convert_event(SDL_Event *sdl_event)
 		case SDL_MOUSEBUTTONDOWN:
 			event.type = TGUI_MOUSE_DOWN;
 			event.mouse.button = sdl_event->button.button;
-			event.mouse.x = sdl_event->button.x;
-			event.mouse.y = sdl_event->button.y;
+			event.mouse.x = (float)sdl_event->button.x;
+			event.mouse.y = (float)sdl_event->button.y;
 			break;
 		case SDL_MOUSEBUTTONUP:
 			event.type = TGUI_MOUSE_UP;
 			event.mouse.button = sdl_event->button.button;
-			event.mouse.x = sdl_event->button.x;
-			event.mouse.y = sdl_event->button.y;
+			event.mouse.x = (float)sdl_event->button.x;
+			event.mouse.y = (float)sdl_event->button.y;
 			break;
 		case SDL_MOUSEMOTION:
 			event.type = TGUI_MOUSE_AXIS;
 			event.mouse.button = -1;
-			event.mouse.x = sdl_event->motion.x;
-			event.mouse.y = sdl_event->motion.y;
+			event.mouse.x = (float)sdl_event->motion.x;
+			event.mouse.y = (float)sdl_event->motion.y;
 			break;
 		case SDL_JOYBUTTONDOWN:
 			event.type = TGUI_JOY_DOWN;
