@@ -98,6 +98,31 @@ void TGUI::handle_event(TGUI_Event *event)
 		int best_score = INT_MAX;
 		int best_grade = 2;
 		find_focus(start, best, main_widget, x, y, best_score, best_grade);
+		if (best_grade == 2) {
+			int new_best_score = INT_MAX;
+			int new_best_grade = 2;
+			TGUI_Widget *new_best = start;
+			if (x < 0) {
+				x = 0;
+				y = -1;
+			}
+			else if (x > 0) {
+				x = 0;
+				y = 1;
+			}
+			else if (y < 0) {
+				x = 1;
+				y = 0;
+			}
+			else {
+				x = -1;
+				y = 0;
+			}
+			find_focus(start, new_best, main_widget, x, y, new_best_score, best_grade);
+			if (best_grade == 0) {
+				best = new_best;
+			}
+		}
 		focus = best;
 	}
 }
