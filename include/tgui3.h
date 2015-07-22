@@ -55,6 +55,8 @@ class TGUI_EXPORT TGUI {
 	friend TGUI_EXPORT void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height);
 
 public:
+	static void set_focus_sloppiness(int sloppiness); // 0-2, default is 2, less means stricter rules to change focus
+
 	TGUI(TGUI_Widget *main_widget, int w, int h);
 	~TGUI();
 
@@ -83,6 +85,8 @@ private:
 	bool focus_something(TGUI_Widget *widget);
 	void focus_distance(TGUI_Widget *start, TGUI_Widget *widget, int dir_x, int dir_y, int &score, int &grade);
 	void find_focus(TGUI_Widget *start, TGUI_Widget *&current_best, TGUI_Widget *widget, int dir_x, int dir_y, int &best_score, int &best_grade);
+
+	static int focus_sloppiness;
 
 	TGUI_Widget *main_widget;
 	TGUI_Widget *focus;
