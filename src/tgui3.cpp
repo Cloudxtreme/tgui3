@@ -119,6 +119,11 @@ void TGUI::set_offset(int offset_x, int offset_y)
 	layout();
 }
 
+TGUI_Widget *TGUI::get_main_widget()
+{
+	return main_widget;
+}
+
 TGUI_Widget *TGUI::get_focus()
 {
 	return focus;
@@ -162,6 +167,7 @@ void TGUI::set_positions(TGUI_Widget *widget, int x, int y)
 
 	int parent_width, parent_height;
 
+	/*
 	if (widget->parent) {
 		parent_width = widget->parent->calculated_w + widget->parent->get_padding_left() + widget->parent->get_padding_right();
 		parent_height = widget->parent->calculated_h + widget->parent->get_padding_top() + widget->parent->get_padding_bottom();
@@ -170,6 +176,10 @@ void TGUI::set_positions(TGUI_Widget *widget, int x, int y)
 		parent_width = w;
 		parent_height = h;
 	}
+	*/
+
+	parent_width = widget->calculated_w + widget->get_padding_left() + widget->get_padding_right();
+	parent_height = widget->calculated_h + widget->get_padding_top() + widget->get_padding_bottom();
 
 	int max_h = 0;
 	int dx = x;
@@ -181,7 +191,7 @@ void TGUI::set_positions(TGUI_Widget *widget, int x, int y)
 		int width = d->calculated_w + d->get_padding_left() + d->get_padding_right();
 		int height = d->calculated_h + d->get_padding_top() + d->get_padding_bottom();
 
-		if (dx + width > parent_width) {
+		if (dx + width > parent_width || widget->break_line) {
 			dx = x;
 			dy += max_h;
 			max_h = 0;
@@ -192,11 +202,11 @@ void TGUI::set_positions(TGUI_Widget *widget, int x, int y)
 
 		set_positions(d, dx+d->get_padding_left()+right_pos, dy+d->get_padding_top()+bottom_pos);
 
-		if (d->float_right == false && d->centered_x == false) {
+		if (d->float_right == false && d->center_x == false) {
 			dx += width;
 		}
 
-		if (d->float_bottom == false && d->centered_y == false) {
+		if (d->float_bottom == false && d->center_y == false) {
 			max_h = height > max_h ? height : max_h;
 		}
 	}
@@ -351,10 +361,11 @@ TGUI_Widget::TGUI_Widget(int w, int h) :
 	padding_bottom(0),
 	float_right(false),
 	float_bottom(false),
-	centered_x(false),
-	centered_y(false),
+	center_x(false),
+	center_y(false),
 	clear_float_x(false),
 	clear_float_y(false),
+	break_line(false),
 	accepts_focus(false),
 	calculated_x(-1),
 	calculated_y(-1),
@@ -379,10 +390,11 @@ TGUI_Widget::TGUI_Widget(float percent_w, float percent_h) :
 	padding_bottom(0),
 	float_right(false),
 	float_bottom(false),
-	centered_x(false),
-	centered_y(false),
+	center_x(false),
+	center_y(false),
 	clear_float_x(false),
 	clear_float_y(false),
+	break_line(false),
 	accepts_focus(false),
 	calculated_x(-1),
 	calculated_y(-1),
@@ -407,10 +419,11 @@ TGUI_Widget::TGUI_Widget(int w, float percent_h) :
 	padding_bottom(0),
 	float_right(false),
 	float_bottom(false),
-	centered_x(false),
-	centered_y(false),
+	center_x(false),
+	center_y(false),
 	clear_float_x(false),
 	clear_float_y(false),
+	break_line(false),
 	accepts_focus(false),
 	calculated_x(-1),
 	calculated_y(-1),
@@ -435,10 +448,11 @@ TGUI_Widget::TGUI_Widget(float percent_w, int h) :
 	padding_bottom(0),
 	float_right(false),
 	float_bottom(false),
-	centered_x(false),
-	centered_y(false),
+	center_x(false),
+	center_y(false),
 	clear_float_x(false),
 	clear_float_y(false),
+	break_line(false),
 	accepts_focus(false),
 	calculated_x(-1),
 	calculated_y(-1),
@@ -527,14 +541,14 @@ void TGUI_Widget::set_float_bottom(bool float_bottom)
 	this->float_bottom = float_bottom;
 }
 
-void TGUI_Widget::set_centered_x(bool centered_x)
+void TGUI_Widget::set_center_x(bool center_x)
 {
-	this->centered_x = centered_x;
+	this->center_x = center_x;
 }
 
-void TGUI_Widget::set_centered_y(bool centered_y)
+void TGUI_Widget::set_center_y(bool center_y)
 {
-	this->centered_y = centered_y;
+	this->center_y = center_y;
 }
 
 void TGUI_Widget::set_clear_float_x(bool clear_float_x)
@@ -545,6 +559,11 @@ void TGUI_Widget::set_clear_float_x(bool clear_float_x)
 void TGUI_Widget::set_clear_float_y(bool clear_float_y)
 {
 	this->clear_float_y = clear_float_y;
+}
+
+void TGUI_Widget::set_break_line(bool break_line)
+{
+	this->break_line = break_line;
 }
 
 void TGUI_Widget::set_accepts_focus(bool accepts_focus)
@@ -638,7 +657,7 @@ int TGUI_Widget::get_padding_bottom()
 
 int TGUI_Widget::get_right_pos()
 {
-	if (float_right == false && centered_x == false) {
+	if (float_right == false && center_x == false) {
 		return 0;
 	}
 	int parent_width;
@@ -670,7 +689,7 @@ int TGUI_Widget::get_right_pos()
 			w2 += d->get_padding_left() + d->get_padding_right();
 			right += w2;
 		}
-		else if (d->centered_x) {
+		else if (d->center_x) {
 			int w2;
 			tgui_get_size(parent, d, &w2, 0);
 			w2 += d->get_padding_left() + d->get_padding_right();
@@ -678,7 +697,7 @@ int TGUI_Widget::get_right_pos()
 		}
 	}
 
-	if (centered_x) {
+	if (center_x) {
 		parent_width += parent->get_padding_left() + parent->get_padding_right();
 		int parent_center = parent->get_padding_right() + (parent_width - parent->get_padding_left() - parent->get_padding_right()) / 2;
 		int widget_center = center_total / 2;
@@ -691,7 +710,7 @@ int TGUI_Widget::get_right_pos()
 
 int TGUI_Widget::get_bottom_pos()
 {
-	if (float_bottom == false && centered_y == false) {
+	if (float_bottom == false && center_y == false) {
 		return 0;
 	}
 	int parent_height;
@@ -699,7 +718,7 @@ int TGUI_Widget::get_bottom_pos()
 	int height;
 	tgui_get_size(parent, this, 0, &height);
 	height += get_padding_top() + get_padding_bottom();
-	if (centered_y) {
+	if (center_y) {
 		parent_height += parent->get_padding_top() + parent->get_padding_bottom();
 		int parent_center = parent->get_padding_top() + (parent_height - parent->get_padding_top() - parent->get_padding_bottom()) / 2;
 		int widget_center = height / 2;
@@ -766,7 +785,7 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 						if (total_w + this_w > w) {
 							total_w = 0;
 						}
-						if (d->float_right == false && d->centered_x == false) {
+						if (d->float_right == false && d->center_x == false) {
 							total_w += this_w;
 						}
 						if (d == widget) {
@@ -827,7 +846,7 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 							}
 						}
 						if (total_w + this_w >= w) {
-							if (d->centered_y == false) {
+							if (d->center_y == false) {
 								total_h += max_h;
 							}
 							total_percent += max_percent;
@@ -845,7 +864,7 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 						else if (i == parent->children.size()-1) {
 							total_percent += max_percent;
 						}
-						else if (d->float_right == false && d->centered_x == false) {
+						else if (d->float_right == false && d->center_x == false) {
 							total_w += this_w;
 						}
 					}

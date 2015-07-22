@@ -67,6 +67,7 @@ public:
 	void focus_something();
 	void set_offset(int offset_x, int offset_y);
 
+	TGUI_Widget *get_main_widget();
 	TGUI_Widget *get_focus();
 	TGUI_Widget *get_event_owner(TGUI_Event *event);
 	int get_width();
@@ -112,10 +113,11 @@ public:
 	void set_parent(TGUI_Widget *widget);
 	void set_float_right(bool float_right);
 	void set_float_bottom(bool float_bottom);
-	void set_centered_x(bool centered_x);
-	void set_centered_y(bool centered_y);
+	void set_center_x(bool center_x);
+	void set_center_y(bool center_y);
 	void set_clear_float_x(bool clear_float_x);
 	void set_clear_float_y(bool clear_float_y);
+	void set_break_line(bool break_line);
 	void set_accepts_focus(bool accepts_focus);
 
 	void set_padding_left(int padding);
@@ -154,8 +156,8 @@ protected:
 	int padding_left, padding_right, padding_top, padding_bottom;
 	bool float_right;
 	bool float_bottom;
-	bool centered_x;
-	bool centered_y;
+	bool center_x;
+	bool center_y;
 	bool accepts_focus;
 
 	int calculated_x, calculated_y;
@@ -163,6 +165,7 @@ protected:
 
 	bool clear_float_x;
 	bool clear_float_y;
+	bool break_line;
 };
 
 #ifdef WITH_SDL
