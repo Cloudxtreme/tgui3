@@ -646,21 +646,23 @@ int TGUI_Widget::get_right_pos()
 	int width;
 	tgui_get_size(parent, this, &width, 0);
 	width += get_padding_left() + get_padding_right();
-	if (centered_x) {
-		parent_width += parent->get_padding_left() + parent->get_padding_right();
-		int parent_center = parent->get_padding_right() + (parent_width - parent->get_padding_left() - parent->get_padding_right()) / 2;
-		int widget_center = width / 2;
-		int offset = parent->get_padding_left();
-		return parent_width - parent_center - widget_center - offset;
-	}
 	int right = 0;
+	int center_this = 0;
+	int center_total = 0;
 	for (size_t i = 0; i < parent->children.size(); i++) {
 		TGUI_Widget *d = parent->children[i];
 		if (d->clear_float_x) {
 			right = 0;
+			center_total = 0;
+			center_this = 0;
 		}
 		if (d == this) {
-			break;
+			if (float_right) {
+				break;
+			}
+			else {
+				center_this = center_total;
+			}
 		}
 		if (d->float_right) {
 			int w2;
@@ -668,6 +670,20 @@ int TGUI_Widget::get_right_pos()
 			w2 += d->get_padding_left() + d->get_padding_right();
 			right += w2;
 		}
+		else if (d->centered_x) {
+			int w2;
+			tgui_get_size(parent, d, &w2, 0);
+			w2 += d->get_padding_left() + d->get_padding_right();
+			center_total += w2;
+		}
+	}
+
+	if (centered_x) {
+		parent_width += parent->get_padding_left() + parent->get_padding_right();
+		int parent_center = parent->get_padding_right() + (parent_width - parent->get_padding_left() - parent->get_padding_right()) / 2;
+		int widget_center = center_total / 2;
+		int offset = parent->get_padding_left();
+		return parent_width - parent_center - widget_center - offset + center_this;
 	}
 
 	return parent_width - (right + width);
