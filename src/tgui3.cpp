@@ -719,17 +719,19 @@ int TGUI_Widget::get_right_pos()
 			right += w2;
 		}
 		else if (d->center_x) {
-			int w2;
-			tgui_get_size(parent, d, &w2, 0);
-			w2 += d->get_padding_left() + d->get_padding_right();
-			if (d->center_y) {
-				center_total[1] += w2;
-			}
-			else if (d->float_bottom) {
-				center_total[2] += w2;
-			}
-			else {
-				center_total[0] += w2;
+			if (d == this || !((d->center_x && d->float_bottom) && (center_x && float_bottom))) {
+				int w2;
+				tgui_get_size(parent, d, &w2, 0);
+				w2 += d->get_padding_left() + d->get_padding_right();
+				if (d->center_y) {
+					center_total[1] += w2;
+				}
+				else if (d->float_bottom) {
+					center_total[2] += w2;
+				}
+				else if (!center_y) {
+					center_total[0] += w2;
+				}
 			}
 		}
 	}
