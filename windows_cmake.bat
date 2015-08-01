@@ -1,1 +1,0 @@
-cmake .. -DCMAKE_GENERATOR_TOOLSET=v120_xp -DUSER_INCLUDE_PATH=C:\Users\Trent\code\include -DUSER_LIBRARY_PATH=C:\Users\Trent\code\lib -DTRENTS_BUILD=on

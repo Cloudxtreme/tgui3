@@ -1,1 +1,0 @@
-cmake .. -DCMAKE_BUILD_TYPE=Release -DTRENTS_BUILD=on
