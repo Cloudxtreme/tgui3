@@ -1,6 +1,6 @@
 TGUI3 is the latest version of TGUI which has been used in games such as
 Monster RPG 2 and Crystal Picnic.  TGUI gets its name from the author's
-initials, "Trent Gamblin". TGUI3's first use is the GUI for Monster RPG 2.
+initials, "Trent Gamblin". TGUI3's first use is the GUI for Monster RPG 3.
 
 TGUI3 currently requires SDL, although effort has been made to keep platform
 specifics sectioned off. Since TGUI3 doesn't do anything platform specific,
