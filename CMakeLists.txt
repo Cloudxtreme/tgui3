@@ -9,8 +9,6 @@ set(USER_LIBRARY_PATH "" CACHE FILEPATH "Any extra library directories you want"
 include_directories(${USER_INCLUDE_PATH})
 link_directories(${USER_LIBRARY_PATH})
 
-# TGUI
-
 set(SRC
 	src/tgui3.cpp
 )
