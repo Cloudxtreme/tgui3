@@ -25,7 +25,6 @@ else()
 	endif()
 	if(APPLE)
 		set_target_properties(tgui3 PROPERTIES MACOSX_RPATH on)
-		include_directories("/Library/Frameworks/SDL2.framework/Headers")
 	endif()
 endif()
 
