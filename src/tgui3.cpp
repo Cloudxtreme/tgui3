@@ -207,8 +207,8 @@ void TGUI::set_positions(TGUI_Widget *widget, int x, int y)
 	parent_height = widget->calculated_h + widget->get_padding_top() + widget->get_padding_bottom();
 
 	int max_h = 0;
-	int dx = x;
-	int dy = y;
+	int dx = 0;
+	int dy = 0;
 
 	for (size_t i = 0; i < widget->children.size(); i++) {
 		TGUI_Widget *d = widget->children[i];
@@ -217,7 +217,7 @@ void TGUI::set_positions(TGUI_Widget *widget, int x, int y)
 		int height = d->calculated_h + d->get_padding_top() + d->get_padding_bottom();
 
 		if (dx + width > parent_width || widget->break_line) {
-			dx = x;
+			dx = 0;
 			dy += max_h;
 			max_h = 0;
 		}
@@ -228,20 +228,14 @@ void TGUI::set_positions(TGUI_Widget *widget, int x, int y)
 		if (d->float_right == false) {
 			pos_x += dx;
 		}
-		else {
-			pos_x += x;
-		}
 		if (d->float_bottom == false) {
 			pos_y += dy;
-		}
-		else {
-			pos_y += y;
 		}
 
 		pos_x += d->get_padding_left();
 		pos_y += d->get_padding_top();
 
-		set_positions(d, pos_x, pos_y);
+		set_positions(d, pos_x+x, pos_y+y);
 
 		if (d->float_right == false && d->center_x == false) {
 			dx += width;
