@@ -841,45 +841,38 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 		}
 	}
 	else {
-		int w, h;
-		tgui_get_size(parent->parent, parent, &w, &h);
+		int w = parent->get_width();
 		w += parent->get_padding_left() + parent->get_padding_right();
+		int h = parent->get_height();
 		h += parent->get_padding_top() + parent->get_padding_bottom();
 		if (width) {
 			if (widget->percent_x) {
 				if (widget->percent_w < 0) {
 					int total_w = 0;
-					float total_percent = 0.0f;
+					bool found_widget = false;
 					for (size_t i = 0; i < parent->children.size(); i++) {
-						int this_w = 0;
 						TGUI_Widget *d = parent->children[i];
-						if (d->percent_x) {
-							if (d->percent_w < 0) {
-								total_percent += -d->percent_w;
-							}
-							else {
-								int w2;
-								tgui_get_size(parent, d, &w2, 0);
-								w2 += d->get_padding_left() + d->get_padding_right();
-								this_w = w2;
-							}
+						if (d == widget) {
+							found_widget = true;
 						}
-						else {
-							this_w = d->w + d->get_padding_left() + d->get_padding_right();
-						}
-						if (total_w + this_w > w) {
-							total_w = 0;
+						int this_w = 0;
+						if (d->percent_x == false || d->percent_w >= 0) {
+							tgui_get_size(parent, d, &this_w, 0);
+							this_w += d->get_padding_left() + d->get_padding_right();
 						}
 						if (d->float_right == false && d->center_x == false) {
 							total_w += this_w;
 						}
-						if (d == widget) {
-							break;
+						if (total_w + this_w > w) {
+							if (found_widget) {
+								break;
+							}
+							total_w = 0;
 						}
 					}
 					int remainder = w - total_w;
 					if (remainder > 0) {
-						*width = remainder * int(-widget->percent_w / total_percent) - (widget->get_padding_left() + widget->get_padding_right());
+						*width = int(remainder * -widget->percent_w - (widget->get_padding_left() + widget->get_padding_right()));
 					}
 					else {
 						*width = 0;
@@ -897,65 +890,46 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 			if (widget->percent_y) {
 				if (widget->percent_h < 0) {
 					int total_w = 0;
-					int total_h = 0;
-					float total_percent = 0.0f;
 					int max_h = 0;
-					float max_percent = 0.0f;
+					bool found_widget = false;
 					for (size_t i = 0; i < parent->children.size(); i++) {
-						int this_w = 0;
-						int this_h = 0;
-						float this_percent = 0.0f;
 						TGUI_Widget *d = parent->children[i];
-						tgui_get_size(parent, d, &this_w, 0);
+						if (d == widget) {
+							found_widget = true;
+						}
+						int this_w;
+						int this_h;
+						tgui_get_size(parent, d, &this_w, &this_h);
 						this_w += d->get_padding_left() + d->get_padding_right();
-						if (d->percent_y) {
-							if (d->percent_h < 0) {
-								this_percent = -d->percent_h;
-							}
-							else {
-								int h2;
-								tgui_get_size(parent, d, 0, &h2);
-								h2 += d->get_padding_top() + d->get_padding_bottom();
-								this_h = h2;
-							}
+						this_h += d->get_padding_top() + d->get_padding_bottom();
+						if (d->percent_y && d->percent_h < 0) {
+							this_h = 0;
 						}
-						else {
-							this_h = d->h + d->get_padding_top() + d->get_padding_bottom();
+						if (total_w + this_w > w) {
+							max_h = this_h;
 						}
-						if (total_w + this_w <= w) {
-							if (this_h > max_h) {
-								max_h = this_h;
-							}
-							if (this_percent > max_percent) {
-								max_percent = this_percent;
-							}
+						else if (this_h > max_h) {
+							max_h = this_h;
+						}
+						if (d->float_right == false && d->center_x == false) {
+							total_w += this_w;
 						}
 						if (total_w + this_w >= w) {
-							if (d->center_y == false) {
-								total_h += max_h;
+							if (found_widget) {
+								break;
 							}
-							total_percent += max_percent;
 							if (total_w + this_w > w) {
-								max_h = this_h;
-								max_percent = this_percent;
 								total_w = this_w;
 							}
 							else {
 								max_h = 0;
-								max_percent = 0.0f;
 								total_w = 0;
 							}
 						}
-						else if (i == parent->children.size()-1) {
-							total_percent += max_percent;
-						}
-						else if (d->float_right == false && d->center_x == false) {
-							total_w += this_w;
-						}
 					}
-					int remainder = h - total_h;
+					int remainder = h - max_h;
 					if (remainder > 0) {
-						*height = remainder * int(-widget->percent_h / total_percent) - (widget->get_padding_top() + widget->get_padding_bottom());
+						*height = int(remainder * -widget->percent_h - (widget->get_padding_top() + widget->get_padding_bottom()));
 					}
 					else {
 						*height = 0;
