@@ -216,7 +216,7 @@ void TGUI::set_positions(TGUI_Widget *widget, int x, int y)
 		int width = d->calculated_w + d->get_padding_left() + d->get_padding_right();
 		int height = d->calculated_h + d->get_padding_top() + d->get_padding_bottom();
 
-		if (dx + width > parent_width || widget->break_line) {
+		if (dx + width > parent_width || d->break_line) {
 			dx = 0;
 			dy += max_h;
 			max_h = 0;
