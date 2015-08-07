@@ -147,10 +147,20 @@ public:
 	void set_padding(float percent_padding);
 
 	TGUI_Widget *get_parent();
+	std::vector<TGUI_Widget *> &get_children();
+
 	int get_x();
 	int get_y();
 	int get_width();
 	int get_height();
+	bool get_float_right();
+	bool get_float_bottom();
+	bool get_center_x();
+	bool get_center_y();
+	bool get_clear_float_x();
+	bool get_clear_float_y();
+	bool get_break_line();
+	bool get_accepts_focus();
 	int get_padding_left();
 	int get_padding_right();
 	int get_padding_top();

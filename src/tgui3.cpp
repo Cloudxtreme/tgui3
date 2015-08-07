@@ -188,6 +188,46 @@ int TGUI::get_height()
 	return h;
 }
 
+bool TGUI_Widget::get_float_right()
+{
+	return float_right;
+}
+
+bool TGUI_Widget::get_float_bottom()
+{
+	return float_bottom;
+}
+
+bool TGUI_Widget::get_center_x()
+{
+	return center_x;
+}
+
+bool TGUI_Widget::get_center_y()
+{
+	return center_y;
+}
+
+bool TGUI_Widget::get_clear_float_x()
+{
+	return clear_float_x;
+}
+
+bool TGUI_Widget::get_clear_float_y()
+{
+	return clear_float_y;
+}
+
+bool TGUI_Widget::get_break_line()
+{
+	return break_line;
+}
+
+bool TGUI_Widget::get_accepts_focus()
+{
+	return accepts_focus;
+}
+
 void TGUI::reset_size(TGUI_Widget *widget)
 {
 	widget->calculated_w = -1;
@@ -761,6 +801,11 @@ void TGUI_Widget::set_accepts_focus(bool accepts_focus)
 TGUI_Widget *TGUI_Widget::get_parent()
 {
 	return parent;
+}
+
+std::vector<TGUI_Widget *> &TGUI_Widget::get_children()
+{
+	return children;
 }
 
 int TGUI_Widget::get_x()
