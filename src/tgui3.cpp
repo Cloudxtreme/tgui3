@@ -836,9 +836,7 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 	}
 	else {
 		int w = parent->get_width();
-		w += parent->get_padding_left() + parent->get_padding_right();
 		int h = parent->get_height();
-		h += parent->get_padding_top() + parent->get_padding_bottom();
 		if (width) {
 			if (widget->percent_x) {
 				if (widget->percent_w < 0) {
