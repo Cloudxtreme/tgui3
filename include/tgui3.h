@@ -77,6 +77,7 @@ public:
 
 private:
 	void destroy(TGUI_Widget *widget);
+	void reset_size(TGUI_Widget *widget);
 	void set_sizes(TGUI_Widget *widget);
 	void set_positions(TGUI_Widget *widget, int x, int y);
 	void draw(TGUI_Widget *widget);
@@ -101,6 +102,11 @@ class TGUI_EXPORT TGUI_Widget {
 	friend class TGUI_EXPORT TGUI;
 
 public:
+	enum Fit {
+		FIT_X,
+		FIT_Y
+	};
+
 	/* Percentage sizes can be negative or positive: positive means % of parent size,
 	 * negative means % of whatever's left after fixed and positive percentage sized
 	 * widgets.
@@ -109,6 +115,11 @@ public:
 	TGUI_Widget(float percent_w, float percent_h);
 	TGUI_Widget(int w, float percent_h);
 	TGUI_Widget(float percent_w, int h);
+
+	TGUI_Widget(Fit fit, int other);
+	TGUI_Widget(Fit fit, float percent_other);
+	TGUI_Widget(); // fit both
+
 	virtual ~TGUI_Widget();
 
 	virtual void draw() {}
@@ -151,6 +162,7 @@ protected:
 
 	TGUI *gui;
 	TGUI_Widget *parent;
+	bool fit_x, fit_y;
 	bool percent_x, percent_y;
 	float percent_w, percent_h;
 	int w, h;
