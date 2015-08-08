@@ -24,7 +24,15 @@ enum TGUI_Event_Type {
 	TGUI_MOUSE_AXIS,
 	TGUI_JOY_DOWN,
 	TGUI_JOY_UP,
-	TGUI_JOY_AXIS
+	TGUI_JOY_AXIS,
+	TGUI_FOCUS
+};
+
+enum TGUI_Focus_Type {
+	TGUI_FOCUS_LEFT,
+	TGUI_FOCUS_RIGHT,
+	TGUI_FOCUS_UP,
+	TGUI_FOCUS_DOWN
 };
 
 struct TGUI_Event {
@@ -42,6 +50,9 @@ struct TGUI_Event {
 		int axis;
 		float value; // -1.0 -> 1.0
 	} joystick;
+	struct TGUI_Event_Focus {
+		TGUI_Focus_Type type;
+	} focus;
 };
 
 class TGUI;

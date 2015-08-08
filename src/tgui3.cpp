@@ -110,9 +110,25 @@ void TGUI::handle_event(TGUI_Event *event)
 		}
 	}
 
-	handle_event(event, main_widget);
+	if (x == 0 && y == 0) {
+		handle_event(event, main_widget);
+	}
+	else {
+		event->type = TGUI_FOCUS;
+		if (x < 0) {
+			event->focus.type = TGUI_FOCUS_LEFT;
+		}
+		else if (x > 0) {
+			event->focus.type = TGUI_FOCUS_RIGHT;
+		}
+		else if (y < 0) {
+			event->focus.type = TGUI_FOCUS_UP;
+		}
+		else {
+			event->focus.type = TGUI_FOCUS_DOWN;
+		}
+		handle_event(event, main_widget);
 
-	if (x != 0 || y != 0) {
 		TGUI_Widget *start = focus == 0 ? main_widget : focus;
 		TGUI_Widget *best = start;
 		int best_score = INT_MAX;
