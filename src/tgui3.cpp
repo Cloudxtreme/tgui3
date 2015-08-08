@@ -61,22 +61,32 @@ void TGUI::handle_event(TGUI_Event *event)
 {
 	int x = 0;
 	int y = 0;
-	if (event->type == TGUI_JOY_AXIS && fabsf(event->joystick.value) > 0.25f) {
-		if (event->joystick.axis == 0) {
-			if (event->joystick.value < 0) {
-				x = -1;
-			}
-			else {
-				x = 1;
+	if (event->type == TGUI_JOY_AXIS) {
+		int axis = event->joystick.axis;
+		std::vector<int>::iterator it = std::find(joy_axis_down.begin(), joy_axis_down.end(), axis);
+		if (fabsf(event->joystick.value) > 0.25f) {
+			if (it == joy_axis_down.end()) {
+				joy_axis_down.push_back(axis);
+				if (axis == 0) {
+					if (event->joystick.value < 0) {
+						x = -1;
+					}
+					else {
+						x = 1;
+					}
+				}
+				else if (axis == 1) {
+					if (event->joystick.value < 0) {
+						y = -1;
+					}
+					else {
+						y = 1;
+					}
+				}
 			}
 		}
-		else if (event->joystick.axis == 1) {
-			if (event->joystick.value < 0) {
-				y = -1;
-			}
-			else {
-				y = 1;
-			}
+		else if (it != joy_axis_down.end()) {
+			joy_axis_down.erase(it);
 		}
 	}
 	else if (event->type == TGUI_KEY_DOWN) {
@@ -100,10 +110,9 @@ void TGUI::handle_event(TGUI_Event *event)
 		}
 	}
 
-	if (x == 0 && y == 0) {
-		handle_event(event, main_widget);
-	}
-	else {
+	handle_event(event, main_widget);
+
+	if (x != 0 || y != 0) {
 		TGUI_Widget *start = focus == 0 ? main_widget : focus;
 		TGUI_Widget *best = start;
 		int best_score = INT_MAX;
