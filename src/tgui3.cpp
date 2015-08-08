@@ -1,5 +1,7 @@
 #include <cmath>
 
+#include <algorithm>
+
 #include "tgui3.h"
 
 int TGUI::focus_sloppiness = 2;
