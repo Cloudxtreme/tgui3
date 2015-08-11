@@ -25,6 +25,7 @@ else()
 	endif()
 	if(APPLE)
 		set_target_properties(tgui3 PROPERTIES MACOSX_RPATH on)
+		set_target_properties(tgui3 PROPERTIES BUILD_WITH_INSTALL_RPATH on)
 	endif()
 endif()
 
