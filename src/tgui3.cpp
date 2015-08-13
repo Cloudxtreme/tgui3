@@ -267,10 +267,14 @@ void TGUI::reset_size(TGUI_Widget *widget)
 void TGUI::set_sizes(TGUI_Widget *widget)
 {
 	widget->gui = this;
-	int width, height;
-	tgui_get_size(widget->parent, widget, &width, &height);
+	int width, height, pad_l, pad_r, pad_t, pad_b;
+	tgui_get_size(widget->parent, widget, &width, &height, &pad_l, &pad_r, &pad_t, &pad_b);
 	widget->calculated_w = width;
 	widget->calculated_h = height;
+	widget->calculated_padding_left = pad_l;
+	widget->calculated_padding_right = pad_r;
+	widget->calculated_padding_top = pad_t;
+	widget->calculated_padding_bottom = pad_b;
 	for (size_t i = 0; i < widget->children.size(); i++) {
 		set_sizes(widget->children[i]);
 	}
@@ -281,10 +285,8 @@ void TGUI::set_positions(TGUI_Widget *widget, int x, int y)
 	widget->calculated_x = x;
 	widget->calculated_y = y;
 
-	int parent_width, parent_height;
-
-	parent_width = widget->calculated_w + widget->get_padding_left() + widget->get_padding_right();
-	parent_height = widget->calculated_h + widget->get_padding_top() + widget->get_padding_bottom();
+	int parent_width = widget->calculated_w + widget->calculated_padding_left + widget->calculated_padding_right;
+	int parent_height = widget->calculated_h + widget->calculated_padding_top + widget->calculated_padding_bottom;
 
 	int max_h = 0;
 	int dx = 0;
@@ -294,8 +296,8 @@ void TGUI::set_positions(TGUI_Widget *widget, int x, int y)
 	for (size_t i = 0; i < widget->children.size(); i++) {
 		TGUI_Widget *d = widget->children[i];
 
-		int width = d->calculated_w + d->get_padding_left() + d->get_padding_right();
-		int height = d->calculated_h + d->get_padding_top() + d->get_padding_bottom();
+		int width = d->calculated_w + d->calculated_padding_left + d->calculated_padding_right;
+		int height = d->calculated_h + d->calculated_padding_top + d->calculated_padding_bottom;
 
 		if (dx + width > max_x) {
 			max_x = dx + width;
@@ -349,7 +351,7 @@ void TGUI::draw(TGUI_Widget *widget)
 
 TGUI_Widget *TGUI::get_event_owner(TGUI_Event *event, TGUI_Widget *widget)
 {
-	for (size_t i = 0; i < widget->children.size(); i++) {
+	for (int i = widget->children.size()-1; i >= 0; i--) { // handle in reverse
 		TGUI_Widget *d = get_event_owner(event, widget->children[i]);
 		if (d != 0) {
 			return d;
@@ -863,50 +865,22 @@ int TGUI_Widget::get_height()
 
 int TGUI_Widget::get_padding_left()
 {
-	if (use_percent_padding_left) {
-		int parent_width;
-		tgui_get_size(parent, this, &parent_width, 0);
-		return int(percent_padding_left * parent_width);
-	}
-	else {
-		return padding_left;
-	}
+	return calculated_padding_left;
 }
 
 int TGUI_Widget::get_padding_right()
 {
-	if (use_percent_padding_right) {
-		int parent_width;
-		tgui_get_size(parent, this, &parent_width, 0);
-		return int(percent_padding_right * parent_width);
-	}
-	else {
-		return padding_right;
-	}
+	return calculated_padding_right;
 }
 
 int TGUI_Widget::get_padding_top()
 {
-	if (use_percent_padding_top) {
-		int parent_height;
-		tgui_get_size(parent, this, 0, &parent_height);
-		return int(percent_padding_top * parent_height);
-	}
-	else {
-		return padding_top;
-	}
+	return calculated_padding_top;
 }
 
 int TGUI_Widget::get_padding_bottom()
 {
-	if (use_percent_padding_bottom) {
-		int parent_height;
-		tgui_get_size(parent, this, 0, &parent_height);
-		return int(percent_padding_bottom * parent_height);
-	}
-	else {
-		return padding_bottom;
-	}
+	return calculated_padding_bottom;
 }
 
 int TGUI_Widget::get_right_pos()
@@ -915,9 +889,9 @@ int TGUI_Widget::get_right_pos()
 		return 0;
 	}
 	int parent_width;
-	tgui_get_size(parent->parent, parent, &parent_width, 0);
+	tgui_get_size(parent->parent, parent, &parent_width, 0, 0, 0, 0, 0);
 	int width;
-	tgui_get_size(parent, this, &width, 0);
+	tgui_get_size(parent, this, &width, 0, 0, 0, 0, 0);
 	width += get_padding_left() + get_padding_right();
 	int right = 0;
 	int center_this = 0;
@@ -963,14 +937,14 @@ int TGUI_Widget::get_right_pos()
 		}
 		if (d->float_right) {
 			int w2;
-			tgui_get_size(parent, d, &w2, 0);
+			tgui_get_size(parent, d, &w2, 0, 0, 0, 0, 0);
 			w2 += d->get_padding_left() + d->get_padding_right();
 			right += w2;
 		}
 		else if (d->center_x) {
 			if (d == this || !((d->center_x && d->float_bottom) && (center_x && float_bottom))) {
 				int w2;
-				tgui_get_size(parent, d, &w2, 0);
+				tgui_get_size(parent, d, &w2, 0, 0, 0, 0, 0);
 				w2 += d->get_padding_left() + d->get_padding_right();
 				if (d->center_y) {
 					center_total[1] += w2;
@@ -1012,9 +986,9 @@ int TGUI_Widget::get_bottom_pos()
 		return 0;
 	}
 	int parent_height;
-	tgui_get_size(parent->parent, parent, 0, &parent_height);
+	tgui_get_size(parent->parent, parent, 0, &parent_height, 0, 0, 0, 0);
 	int height;
-	tgui_get_size(parent, this, 0, &height);
+	tgui_get_size(parent, this, 0, &height, 0, 0, 0, 0);
 	height += get_padding_top() + get_padding_bottom();
 	if (center_y) {
 		parent_height += parent->get_padding_top() + parent->get_padding_bottom();
@@ -1034,7 +1008,7 @@ int TGUI_Widget::get_bottom_pos()
 		}
 		if (d->float_bottom) {
 			int h2;
-			tgui_get_size(parent, d, 0, &h2);
+			tgui_get_size(parent, d, 0, &h2, 0, 0, 0, 0);
 			h2 += d->get_padding_top() + d->get_padding_bottom();
 			bottom += h2;
 		}
@@ -1043,8 +1017,10 @@ int TGUI_Widget::get_bottom_pos()
 	return parent_height - (bottom + height);
 }
 
-void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height)
+void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height, int *pad_l, int *pad_r, int *pad_t, int *pad_b)
 {
+	int parent_w, parent_h;
+
 	if (parent == 0) {
 		if (width) {
 			*width = widget->gui->w;
@@ -1052,10 +1028,12 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 		if (height) {
 			*height = widget->gui->h;
 		}
+		parent_w = widget->gui->w;
+		parent_h = widget->gui->h;
 	}
 	else {
-		int w = parent->get_width();
-		int h = parent->get_height();
+		int w = parent_w = parent->get_width();
+		int h = parent_h = parent->get_height();
 		if (width) {
 			if (widget->calculated_w >= 0) {
 				*width = widget->calculated_w;
@@ -1071,8 +1049,7 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 						}
 						int this_w = 0;
 						if (d->percent_x == false || d->percent_w >= 0) {
-							tgui_get_size(parent, d, &this_w, 0);
-							this_w += d->get_padding_left() + d->get_padding_right();
+							tgui_get_size(parent, d, &this_w, 0, 0, 0, 0, 0);
 						}
 						if (d->float_right == false && d->center_x == false) {
 							total_w += this_w;
@@ -1086,14 +1063,27 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 					}
 					int remainder = w - total_w;
 					if (remainder > 0) {
-						*width = int(remainder * -widget->percent_w - (widget->get_padding_left() + widget->get_padding_right()));
+						*width = int(remainder * -widget->percent_w);
 					}
 					else {
 						*width = 0;
 					}
 				}
 				else {
-					*width = int(w * widget->percent_w);
+					int padding = 0;
+					if (widget->use_percent_padding_left) {
+						padding += int(parent_w * widget->percent_padding_left);
+					}
+					else {
+						padding += widget->padding_left;
+					}
+					if (widget->use_percent_padding_right) {
+						padding += int(parent_w * widget->percent_padding_right);
+					}
+					else {
+						padding += widget->padding_right;
+					}
+					*width = int(w * widget->percent_w) - padding;
 				}
 			}
 			else {
@@ -1116,9 +1106,7 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 						}
 						int this_w;
 						int this_h;
-						tgui_get_size(parent, d, &this_w, &this_h);
-						this_w += d->get_padding_left() + d->get_padding_right();
-						this_h += d->get_padding_top() + d->get_padding_bottom();
+						tgui_get_size(parent, d, &this_w, &this_h, 0, 0, 0, 0);
 						if (d->percent_y && d->percent_h < 0) {
 							this_h = 0;
 						}
@@ -1146,19 +1134,69 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 					}
 					int remainder = h - max_h;
 					if (remainder > 0) {
-						*height = int(remainder * -widget->percent_h - (widget->get_padding_top() + widget->get_padding_bottom()));
+						*height = int(remainder * -widget->percent_h);
 					}
 					else {
 						*height = 0;
 					}
 				}
 				else {
-					*height = int(h * widget->percent_h);
+					int padding = 0;
+					if (widget->use_percent_padding_top) {
+						padding += int(parent_h * widget->percent_padding_top);
+					}
+					else {
+						padding += widget->padding_top;
+					}
+					if (widget->use_percent_padding_bottom) {
+						padding += int(parent_h * widget->percent_padding_bottom);
+					}
+					else {
+						padding += widget->padding_bottom;
+					}
+					*height = int(h * widget->percent_h) - padding;
 				}
 			}
 			else {
 				*height = widget->h;
 			}
+		}
+	}
+
+	if (pad_l) {
+		if (widget->use_percent_padding_left) {
+			*pad_l = int(parent_w * widget->percent_padding_left);
+
+		}
+		else {
+			*pad_l = widget->padding_left;
+		}
+	}
+	if (pad_r) {
+		if (widget->use_percent_padding_right) {
+			*pad_r = int(parent_w * widget->percent_padding_right);
+
+		}
+		else {
+			*pad_r = widget->padding_right;
+		}
+	}
+	if (pad_t) {
+		if (widget->use_percent_padding_top) {
+			*pad_t = int(parent_h * widget->percent_padding_top);
+
+		}
+		else {
+			*pad_t = widget->padding_top;
+		}
+	}
+	if (pad_b) {
+		if (widget->use_percent_padding_bottom) {
+			*pad_b = int(parent_h * widget->percent_padding_bottom);
+
+		}
+		else {
+			*pad_b = widget->padding_bottom;
 		}
 	}
 }

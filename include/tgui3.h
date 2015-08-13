@@ -58,12 +58,12 @@ struct TGUI_Event {
 class TGUI;
 class TGUI_Widget;
 
-TGUI_EXPORT void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height);
+TGUI_EXPORT void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height, int *pad_l, int *pad_r, int *pad_t, int *pad_b);
 TGUI_EXPORT TGUI_Event tgui_get_relative_event(TGUI_Widget *widget, TGUI_Event *event);
 
 // a GUI hierarchy
 class TGUI_EXPORT TGUI {
-	friend TGUI_EXPORT void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height);
+	friend TGUI_EXPORT void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height, int *pad_l, int *pad_r, int *pad_t, int *pad_b);
 
 public:
 	static void set_focus_sloppiness(int sloppiness); // 0-2, default is 2, less means stricter rules to change focus
@@ -111,7 +111,7 @@ private:
 class TGUI_Widget;
 
 class TGUI_EXPORT TGUI_Widget {
-	friend TGUI_EXPORT void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height);
+	friend TGUI_EXPORT void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *height, int *pad_l, int *pad_r, int *pad_t, int *pad_b);
 	friend class TGUI_EXPORT TGUI;
 
 public:
@@ -201,6 +201,7 @@ protected:
 
 	int calculated_x, calculated_y;
 	int calculated_w, calculated_h;
+	int calculated_padding_left, calculated_padding_right, calculated_padding_top, calculated_padding_bottom;
 
 	bool clear_float_x;
 	bool clear_float_y;
