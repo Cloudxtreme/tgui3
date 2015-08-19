@@ -159,6 +159,8 @@ public:
 	void set_padding(int padding);
 	void set_padding(float percent_padding);
 
+	void set_relative_position(int relative_x, int relative_y);
+
 	TGUI_Widget *get_parent();
 	std::vector<TGUI_Widget *> &get_children();
 
@@ -199,13 +201,16 @@ protected:
 	bool center_y;
 	bool accepts_focus;
 
-	int calculated_x, calculated_y;
-	int calculated_w, calculated_h;
-	int calculated_padding_left, calculated_padding_right, calculated_padding_top, calculated_padding_bottom;
-
 	bool clear_float_x;
 	bool clear_float_y;
 	bool break_line;
+
+	bool use_relative_position;
+	int relative_x, relative_y;
+
+	int calculated_x, calculated_y;
+	int calculated_w, calculated_h;
+	int calculated_padding_left, calculated_padding_right, calculated_padding_top, calculated_padding_bottom;
 };
 
 #ifdef WITH_SDL
