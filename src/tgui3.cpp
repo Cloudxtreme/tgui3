@@ -439,7 +439,7 @@ void TGUI::focus_distance(TGUI_Widget *start, TGUI_Widget *widget, int dir_x, in
 	int dy = widget_cy - cy;
 	int dist = int(sqrtf(float(dx*dx + dy*dy)));
 
-	if (!((widget_x1 > box_x2) || (widget_x2 < box_x1) || (widget_y1 > box_y2) || (widget_y2 < box_y1))) {
+	if (!((widget_x1 >= box_x2) || (widget_x2 <= box_x1) || (widget_y1 >= box_y2) || (widget_y2 <= box_y1))) {
 		grade = 0;
 	}
 	else if (((dir_x < 0) && (widget_cx < cx)) || ((dir_x > 0) && (widget_cx > cx)) || ((dir_y < 0) && (widget_cy < cy)) || ((dir_y > 0) && (widget_cy > cy))) {
@@ -1048,7 +1048,7 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 							found_widget = true;
 						}
 						int this_w = 0;
-						if (d->percent_x == false || d->percent_w >= 0) {
+						if (d != widget && (d->percent_x == false || d->percent_w >= 0)) {
 							tgui_get_size(parent, d, &this_w, 0, 0, 0, 0, 0);
 						}
 						if (d->float_right == false && d->center_x == false) {
@@ -1106,9 +1106,15 @@ void tgui_get_size(TGUI_Widget *parent, TGUI_Widget *widget, int *width, int *he
 						}
 						int this_w;
 						int this_h;
-						tgui_get_size(parent, d, &this_w, &this_h, 0, 0, 0, 0);
-						if (d->percent_y && d->percent_h < 0) {
+						if (d == widget) {
+							this_w = 0;
 							this_h = 0;
+						}
+						else {
+							tgui_get_size(parent, d, &this_w, &this_h, 0, 0, 0, 0);
+							if (d->percent_y && d->percent_h < 0) {
+								this_h = 0;
+							}
 						}
 						if (total_w + this_w > w) {
 							max_h = this_h;
