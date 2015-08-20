@@ -131,16 +131,16 @@ void TGUI::handle_event(TGUI_Event *event)
 		}
 		handle_event(event, main_widget);
 
-		if (event->focus.type == TGUI_FOCUS_LEFT && focus->left_widget) {
+		if (event->focus.type == TGUI_FOCUS_LEFT && focus && focus->left_widget) {
 			focus = focus->left_widget;
 		}
-		else if (event->focus.type == TGUI_FOCUS_RIGHT && focus->right_widget) {
+		else if (event->focus.type == TGUI_FOCUS_RIGHT && focus && focus->right_widget) {
 			focus = focus->right_widget;
 		}
-		else if (event->focus.type == TGUI_FOCUS_UP && focus->up_widget) {
+		else if (event->focus.type == TGUI_FOCUS_UP && focus && focus->up_widget) {
 			focus = focus->up_widget;
 		}
-		else if (event->focus.type == TGUI_FOCUS_DOWN && focus->down_widget) {
+		else if (event->focus.type == TGUI_FOCUS_DOWN && focus && focus->down_widget) {
 			focus = focus->down_widget;
 		}
 		else {
