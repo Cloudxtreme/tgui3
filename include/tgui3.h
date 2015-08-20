@@ -161,6 +161,11 @@ public:
 
 	void set_relative_position(int relative_x, int relative_y);
 
+	void set_left_widget(TGUI_Widget *widget);
+	void set_right_widget(TGUI_Widget *widget);
+	void set_up_widget(TGUI_Widget *widget);
+	void set_down_widget(TGUI_Widget *widget);
+
 	TGUI_Widget *get_parent();
 	std::vector<TGUI_Widget *> &get_children();
 
@@ -182,6 +187,7 @@ public:
 	int get_padding_bottom();
 
 protected:
+	void init();
 	int get_right_pos();
 	int get_bottom_pos();
 
@@ -211,6 +217,11 @@ protected:
 	int calculated_x, calculated_y;
 	int calculated_w, calculated_h;
 	int calculated_padding_left, calculated_padding_right, calculated_padding_top, calculated_padding_bottom;
+
+	TGUI_Widget *left_widget;
+	TGUI_Widget *right_widget;
+	TGUI_Widget *up_widget;
+	TGUI_Widget *down_widget;
 };
 
 #ifdef WITH_SDL

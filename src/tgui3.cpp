@@ -131,40 +131,54 @@ void TGUI::handle_event(TGUI_Event *event)
 		}
 		handle_event(event, main_widget);
 
-		TGUI_Widget *start = focus == 0 ? main_widget : focus;
-		TGUI_Widget *best = start;
-		int best_score = INT_MAX;
-		int best_grade = 2;
-		find_focus(start, best, main_widget, x, y, best_score, best_grade);
-		if (focus_sloppiness > 0) {
-			if (best_grade == 2) {
-				int new_best_score = INT_MAX;
-				int new_best_grade = 2;
-				TGUI_Widget *new_best = start;
-				if (x < 0) {
-					x = 0;
-					y = -1;
-				}
-				else if (x > 0) {
-					x = 0;
-					y = 1;
-				}
-				else if (y < 0) {
-					x = 1;
-					y = 0;
-				}
-				else {
-					x = -1;
-					y = 0;
-				}
-				find_focus(start, new_best, main_widget, x, y, new_best_score, best_grade);
-				if (best_grade == 0) {
-					best = new_best;
+		if (event->focus.type == TGUI_FOCUS_LEFT && focus->left_widget) {
+			focus = focus->left_widget;
+		}
+		else if (event->focus.type == TGUI_FOCUS_RIGHT && focus->right_widget) {
+			focus = focus->right_widget;
+		}
+		else if (event->focus.type == TGUI_FOCUS_UP && focus->up_widget) {
+			focus = focus->up_widget;
+		}
+		else if (event->focus.type == TGUI_FOCUS_DOWN && focus->down_widget) {
+			focus = focus->down_widget;
+		}
+		else {
+			TGUI_Widget *start = focus == 0 ? main_widget : focus;
+			TGUI_Widget *best = start;
+			int best_score = INT_MAX;
+			int best_grade = 2;
+			find_focus(start, best, main_widget, x, y, best_score, best_grade);
+			if (focus_sloppiness > 0) {
+				if (best_grade == 2) {
+					int new_best_score = INT_MAX;
+					int new_best_grade = 2;
+					TGUI_Widget *new_best = start;
+					if (x < 0) {
+						x = 0;
+						y = -1;
+					}
+					else if (x > 0) {
+						x = 0;
+						y = 1;
+					}
+					else if (y < 0) {
+						x = 1;
+						y = 0;
+					}
+					else {
+						x = -1;
+						y = 0;
+					}
+					find_focus(start, new_best, main_widget, x, y, new_best_score, best_grade);
+					if (best_grade == 0) {
+						best = new_best;
+					}
 				}
 			}
-		}
-		if (best_grade <= focus_sloppiness) {
-			focus = best;
+			if (best_grade <= focus_sloppiness) {
+				focus = best;
+			}
 		}
 	}
 }
@@ -487,156 +501,50 @@ void TGUI::find_focus(TGUI_Widget *start, TGUI_Widget *&current_best, TGUI_Widge
 }
 
 TGUI_Widget::TGUI_Widget(int w, int h) :
-	parent(0),
 	fit_x(false),
 	fit_y(false),
 	percent_x(false),
 	percent_y(false),
 	w(w),
-	h(h),
-	use_percent_padding_left(false),
-	use_percent_padding_right(false),
-	use_percent_padding_top(false),
-	use_percent_padding_bottom(false),
-	padding_left(0),
-	padding_right(0),
-	padding_top(0),
-	padding_bottom(0),
-	float_right(false),
-	float_bottom(false),
-	center_x(false),
-	center_y(false),
-	clear_float_x(false),
-	clear_float_y(false),
-	break_line(false),
-	accepts_focus(false),
-	use_relative_position(false),
-	calculated_x(-1),
-	calculated_y(-1),
-	calculated_w(-1),
-	calculated_h(-1)
+	h(h)
 {
+	init();
 }
 
 TGUI_Widget::TGUI_Widget(float percent_w, float percent_h) :
-	parent(0),
 	fit_x(false),
 	fit_y(false),
 	percent_x(true),
 	percent_y(true),
 	percent_w(percent_w),
-	percent_h(percent_h),
-	use_percent_padding_left(false),
-	use_percent_padding_right(false),
-	use_percent_padding_top(false),
-	use_percent_padding_bottom(false),
-	padding_left(0),
-	padding_right(0),
-	padding_top(0),
-	padding_bottom(0),
-	float_right(false),
-	float_bottom(false),
-	center_x(false),
-	center_y(false),
-	clear_float_x(false),
-	clear_float_y(false),
-	break_line(false),
-	accepts_focus(false),
-	use_relative_position(false),
-	calculated_x(-1),
-	calculated_y(-1),
-	calculated_w(-1),
-	calculated_h(-1)
+	percent_h(percent_h)
 {
+	init();
 }
 
 TGUI_Widget::TGUI_Widget(int w, float percent_h) :
-	parent(0),
 	fit_x(false),
 	fit_y(false),
 	percent_x(false),
 	percent_y(true),
 	percent_h(percent_h),
-	w(w),
-	use_percent_padding_left(false),
-	use_percent_padding_right(false),
-	use_percent_padding_top(false),
-	use_percent_padding_bottom(false),
-	padding_left(0),
-	padding_right(0),
-	padding_top(0),
-	padding_bottom(0),
-	float_right(false),
-	float_bottom(false),
-	center_x(false),
-	center_y(false),
-	clear_float_x(false),
-	clear_float_y(false),
-	break_line(false),
-	accepts_focus(false),
-	use_relative_position(false),
-	calculated_x(-1),
-	calculated_y(-1),
-	calculated_w(-1),
-	calculated_h(-1)
+	w(w)
 {
+	init();
 }
 
 TGUI_Widget::TGUI_Widget(float percent_w, int h) :
-	parent(0),
 	fit_x(false),
 	fit_y(false),
 	percent_x(true),
 	percent_y(false),
 	percent_w(percent_w),
-	h(h),
-	use_percent_padding_left(false),
-	use_percent_padding_right(false),
-	use_percent_padding_top(false),
-	use_percent_padding_bottom(false),
-	padding_left(0),
-	padding_right(0),
-	padding_top(0),
-	padding_bottom(0),
-	float_right(false),
-	float_bottom(false),
-	center_x(false),
-	center_y(false),
-	clear_float_x(false),
-	clear_float_y(false),
-	break_line(false),
-	accepts_focus(false),
-	use_relative_position(false),
-	calculated_x(-1),
-	calculated_y(-1),
-	calculated_w(-1),
-	calculated_h(-1)
+	h(h)
 {
+	init();
 }
 
-TGUI_Widget::TGUI_Widget(Fit fit, int other) :
-	parent(0),
-	use_percent_padding_left(false),
-	use_percent_padding_right(false),
-	use_percent_padding_top(false),
-	use_percent_padding_bottom(false),
-	padding_left(0),
-	padding_right(0),
-	padding_top(0),
-	padding_bottom(0),
-	float_right(false),
-	float_bottom(false),
-	center_x(false),
-	center_y(false),
-	clear_float_x(false),
-	clear_float_y(false),
-	break_line(false),
-	accepts_focus(false),
-	use_relative_position(false),
-	calculated_x(-1),
-	calculated_y(-1),
-	calculated_w(-1),
-	calculated_h(-1)
+TGUI_Widget::TGUI_Widget(Fit fit, int other)
 {
 	if (fit == FIT_X) {
 		fit_x = true;
@@ -653,31 +561,11 @@ TGUI_Widget::TGUI_Widget(Fit fit, int other) :
 
 	percent_x = false;
 	percent_y = false;
+
+	init();
 }
 
-TGUI_Widget::TGUI_Widget(Fit fit, float percent_other) :
-	parent(0),
-	use_percent_padding_left(false),
-	use_percent_padding_right(false),
-	use_percent_padding_top(false),
-	use_percent_padding_bottom(false),
-	padding_left(0),
-	padding_right(0),
-	padding_top(0),
-	padding_bottom(0),
-	float_right(false),
-	float_bottom(false),
-	center_x(false),
-	center_y(false),
-	clear_float_x(false),
-	clear_float_y(false),
-	break_line(false),
-	accepts_focus(false),
-	use_relative_position(false),
-	calculated_x(-1),
-	calculated_y(-1),
-	calculated_w(-1),
-	calculated_h(-1)
+TGUI_Widget::TGUI_Widget(Fit fit, float percent_other)
 {
 	if (fit == FIT_X) {
 		fit_x = true;
@@ -696,31 +584,11 @@ TGUI_Widget::TGUI_Widget(Fit fit, float percent_other) :
 
 	w = 0;
 	h = 0;
+
+	init();
 }
 
-TGUI_Widget::TGUI_Widget() :
-	parent(0),
-	use_percent_padding_left(false),
-	use_percent_padding_right(false),
-	use_percent_padding_top(false),
-	use_percent_padding_bottom(false),
-	padding_left(0),
-	padding_right(0),
-	padding_top(0),
-	padding_bottom(0),
-	float_right(false),
-	float_bottom(false),
-	center_x(false),
-	center_y(false),
-	clear_float_x(false),
-	clear_float_y(false),
-	break_line(false),
-	accepts_focus(false),
-	use_relative_position(false),
-	calculated_x(-1),
-	calculated_y(-1),
-	calculated_w(-1),
-	calculated_h(-1)
+TGUI_Widget::TGUI_Widget()
 {
 	fit_x = true;
 	fit_y = true;
@@ -729,6 +597,8 @@ TGUI_Widget::TGUI_Widget() :
 
 	w = 0;
 	h = 0;
+
+	init();
 }
 
 TGUI_Widget::~TGUI_Widget()
@@ -806,6 +676,26 @@ void TGUI_Widget::set_relative_position(int relative_x, int relative_y)
 	use_relative_position = true;
 	this->relative_x = relative_x;
 	this->relative_y = relative_y;
+}
+
+void TGUI_Widget::set_left_widget(TGUI_Widget *widget)
+{
+	left_widget = widget;
+}
+
+void TGUI_Widget::set_right_widget(TGUI_Widget *widget)
+{
+	right_widget = widget;
+}
+
+void TGUI_Widget::set_up_widget(TGUI_Widget *widget)
+{
+	up_widget = widget;
+}
+
+void TGUI_Widget::set_down_widget(TGUI_Widget *widget)
+{
+	down_widget = widget;
 }
 
 void TGUI_Widget::set_float_right(bool float_right)
@@ -907,6 +797,36 @@ int TGUI_Widget::get_padding_top()
 int TGUI_Widget::get_padding_bottom()
 {
 	return calculated_padding_bottom;
+}
+
+void TGUI_Widget::init()
+{
+	parent = 0;
+	use_percent_padding_left = false;
+	use_percent_padding_right = false;
+	use_percent_padding_top = false;
+	use_percent_padding_bottom = false;
+	padding_left = 0;
+	padding_right = 0;
+	padding_top = 0;
+	padding_bottom = 0;
+	float_right = false;
+	float_bottom = false;
+	center_x = false;
+	center_y = false;
+	clear_float_x = false;
+	clear_float_y = false;
+	break_line = false;
+	accepts_focus = false;
+	use_relative_position = false;
+	left_widget = 0;
+	right_widget = 0;
+	up_widget = 0;
+	down_widget = 0;
+	calculated_x = -1;
+	calculated_y = -1;
+	calculated_w = -1;
+	calculated_h = -1;
 }
 
 int TGUI_Widget::get_right_pos()
