@@ -842,30 +842,38 @@ int TGUI_Widget::get_right_pos()
 	int right = 0;
 	int center_this = 0;
 	int center_total[3] = { 0 }; // top middle bottom
+	bool found = false;
+	bool finalized = false;
 	for (size_t i = 0; i < parent->children.size(); i++) {
 		TGUI_Widget *d = parent->children[i];
 		if (d->clear_float_x) {
-			right = 0;
-			if (d->center_y) {
-				center_total[1] = 0;
-				if (center_y) {
-					center_this = 0;
-				}
-			}
-			else if (d->float_bottom) {
-				center_total[2] = 0;
-				if (float_bottom) {
-					center_this = 0;
-				}
+			if (found) {
+				finalized = true;
 			}
 			else {
-				center_total[0] = 0;
-				if (center_y == false && float_bottom == false) {
-					center_this = 0;
+				right = 0;
+				if (d->center_y) {
+					center_total[1] = 0;
+					if (center_y) {
+						center_this = 0;
+					}
+				}
+				else if (d->float_bottom) {
+					center_total[2] = 0;
+					if (float_bottom) {
+						center_this = 0;
+					}
+				}
+				else {
+					center_total[0] = 0;
+					if (center_y == false && float_bottom == false) {
+						center_this = 0;
+					}
 				}
 			}
 		}
 		if (d == this) {
+			found = true;
 			if (float_right) {
 				break;
 			}
@@ -887,7 +895,7 @@ int TGUI_Widget::get_right_pos()
 			w2 += d->get_padding_left() + d->get_padding_right();
 			right += w2;
 		}
-		else if (d->center_x) {
+		else if (d->center_x && !finalized) {
 			if (d == this || !((d->center_x && d->float_bottom) && (center_x && float_bottom))) {
 				int w2;
 				tgui_get_size(parent, d, &w2, 0, 0, 0, 0, 0);
@@ -1160,6 +1168,10 @@ TGUI_Event tgui_get_relative_event(TGUI_Widget *widget, TGUI_Event *event)
 	if (new_event.type == TGUI_MOUSE_DOWN || new_event.type == TGUI_MOUSE_UP || new_event.type == TGUI_MOUSE_AXIS) {
 		new_event.mouse.x -= widget->get_x();
 		new_event.mouse.y -= widget->get_y();
+
+		if (new_event.mouse.x >= widget->get_width() || new_event.mouse.y >= widget->get_height()) {
+			new_event.mouse.x = new_event.mouse.y = -1;
+		}
 	}
 
 	return new_event;
