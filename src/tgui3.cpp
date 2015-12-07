@@ -1241,7 +1241,7 @@ TGUI_Event tgui_sdl_convert_event(SDL_Event *sdl_event)
 		case TGUI_MOUSE_DOWN:
 		case TGUI_MOUSE_UP:
 		case TGUI_MOUSE_AXIS:
-			printf("[%2d] %d %d,%d\n", event.type, event.mouse.button, event.mouse.x, event.mouse.y);
+			printf("[%2d] %d %f,%f\n", event.type, event.mouse.button, event.mouse.x, event.mouse.y);
 			break;
 		case TGUI_JOY_DOWN:
 		case TGUI_JOY_UP:
