@@ -139,6 +139,7 @@ public:
 	virtual void handle_event(TGUI_Event *event) {}
 
 	void set_parent(TGUI_Widget *widget);
+	void set_float_left(bool float_left);
 	void set_float_right(bool float_right);
 	void set_float_bottom(bool float_bottom);
 	void set_center_x(bool center_x);
@@ -173,6 +174,7 @@ public:
 	int get_y();
 	int get_width();
 	int get_height();
+	bool get_float_left();
 	bool get_float_right();
 	bool get_float_bottom();
 	bool get_center_x();
@@ -201,6 +203,7 @@ protected:
 	bool use_percent_padding_left, use_percent_padding_right, use_percent_padding_top, use_percent_padding_bottom;
 	float percent_padding_left, percent_padding_right, percent_padding_top, percent_padding_bottom;
 	int padding_left, padding_right, padding_top, padding_bottom;
+	bool float_left;
 	bool float_right;
 	bool float_bottom;
 	bool center_x;

@@ -229,6 +229,11 @@ int TGUI::get_height()
 	return h;
 }
 
+bool TGUI_Widget::get_float_left()
+{
+	return float_left;
+}
+
 bool TGUI_Widget::get_float_right()
 {
 	return float_right;
@@ -336,7 +341,7 @@ void TGUI::set_positions(TGUI_Widget *widget, int x, int y)
 			pos_x = d->get_right_pos();
 			pos_y = d->get_bottom_pos();
 
-			if (d->float_right == false) {
+			if (d->float_left == false && d->float_right == false) {
 				pos_x += dx;
 			}
 			if (d->float_bottom == false) {
@@ -350,7 +355,7 @@ void TGUI::set_positions(TGUI_Widget *widget, int x, int y)
 
 		set_positions(d, pos_x+x, pos_y+y);
 
-		if (d->float_right == false && d->center_x == false && d->use_relative_position == false) {
+		if (d->float_left == false && d->float_right == false && d->center_x == false && d->use_relative_position == false) {
 			dx += width;
 		}
 
@@ -698,6 +703,11 @@ void TGUI_Widget::set_down_widget(TGUI_Widget *widget)
 	down_widget = widget;
 }
 
+void TGUI_Widget::set_float_left(bool float_left)
+{
+	this->float_left = float_left;
+}
+
 void TGUI_Widget::set_float_right(bool float_right)
 {
 	this->float_right = float_right;
@@ -810,6 +820,7 @@ void TGUI_Widget::init()
 	padding_right = 0;
 	padding_top = 0;
 	padding_bottom = 0;
+	float_left = false;
 	float_right = false;
 	float_bottom = false;
 	center_x = false;
@@ -831,7 +842,10 @@ void TGUI_Widget::init()
 
 int TGUI_Widget::get_right_pos()
 {
-	if (float_right == false && center_x == false) {
+	if (float_left == false && float_right == false && center_x == false) {
+		return 0;
+	}
+	if (float_left) {
 		return 0;
 	}
 	int parent_width;
