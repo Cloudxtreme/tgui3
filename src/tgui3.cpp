@@ -61,76 +61,16 @@ void TGUI::draw()
 
 void TGUI::handle_event(TGUI_Event *event)
 {
-	int x = 0;
-	int y = 0;
-	if (event->type == TGUI_JOY_AXIS) {
-		int axis = event->joystick.axis;
-		std::vector<int>::iterator it = std::find(joy_axis_down.begin(), joy_axis_down.end(), axis);
-		if (fabsf(event->joystick.value) > 0.25f) {
-			if (it == joy_axis_down.end()) {
-				joy_axis_down.push_back(axis);
-				if (axis == 0) {
-					if (event->joystick.value < 0) {
-						x = -1;
-					}
-					else {
-						x = 1;
-					}
-				}
-				else if (axis == 1) {
-					if (event->joystick.value < 0) {
-						y = -1;
-					}
-					else {
-						y = 1;
-					}
-				}
-			}
-		}
-		else if (it != joy_axis_down.end()) {
-			joy_axis_down.erase(it);
-		}
-	}
-	else if (event->type == TGUI_KEY_DOWN) {
-		if (event->keyboard.code == TGUIK_LEFT) {
-			x = -1;
-		}
-		else if (event->keyboard.code == TGUIK_RIGHT) {
-			x = 1;
-		}
-		else if (event->keyboard.code == TGUIK_UP) {
-			y = -1;
-		}
-		else if (event->keyboard.code == TGUIK_DOWN) {
-			y = 1;
-		}
-	}
-	else if (event->type == TGUI_MOUSE_DOWN) {
+	if (event->type == TGUI_MOUSE_DOWN) {
 		TGUI_Widget *widget = get_event_owner(event);
 		if (widget && widget->accepts_focus) {
 			focus = widget;
 		}
 	}
 
-	if (x == 0 && y == 0) {
-		handle_event(event, main_widget);
-	}
-	else {
-		event->type = TGUI_FOCUS;
-		if (x < 0) {
-			event->focus.type = TGUI_FOCUS_LEFT;
-		}
-		else if (x > 0) {
-			event->focus.type = TGUI_FOCUS_RIGHT;
-		}
-		else if (y < 0) {
-			event->focus.type = TGUI_FOCUS_UP;
-		}
-		else {
-			event->focus.type = TGUI_FOCUS_DOWN;
-		}
-		handle_event(event, main_widget);
+	handle_event(event, main_widget);
 
+	if (event->type == TGUI_FOCUS) {
 		if (event->focus.type == TGUI_FOCUS_LEFT && focus && focus->left_widget) {
 			focus = focus->left_widget;
 		}
@@ -148,6 +88,23 @@ void TGUI::handle_event(TGUI_Event *event)
 			TGUI_Widget *best = start;
 			int best_score = INT_MAX;
 			int best_grade = 2;
+			int x, y;
+			if (event->focus.type == TGUI_FOCUS_LEFT) {
+				x = -1;
+				y = 0;
+			}
+			else if (event->focus.type == TGUI_FOCUS_RIGHT) {
+				x = 1;
+				y = 0;
+			}
+			else if (event->focus.type == TGUI_FOCUS_UP) {
+				x = 0;
+				y = -1;
+			}
+			else {
+				x = 0;
+				y = 1;
+			}
 			find_focus(start, best, main_widget, x, y, best_score, best_grade);
 			if (focus_sloppiness > 0) {
 				if (best_grade == 2) {

@@ -104,8 +104,6 @@ private:
 	TGUI_Widget *focus;
 	int w, h;
 	int offset_x, offset_y;
-
-	std::vector<int> joy_axis_down;
 };
 
 class TGUI_Widget;
