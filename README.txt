@@ -20,7 +20,8 @@ own data.  You would then handle the TGUI_MOUSE_DOWN, TGUI_KEY_DOWN,
 TGUI_JOY_DOWN events and their complementing _UP events. There are also
 TGUI_MOUSE_AXIS and TGUI_JOY_AXIS events.
 
-TGUI3 automatically handles widget focus for you. You can use the keyboard
-arrows or joystick to move the focus to another widget and you can see what
-the current widget is with with gui->get_focus(), checking if it's 'this' and
-displaying focus to the user any way you wish, such as an animated border.
+You can convert key and button presses to TGUI_FOCUS events (e.g., arrow keys)
+which will make TGUI focus the correct widget to the left, right, up or down
+from the current one. You can see which widget has the focus with
+gui->get_focus() (check if it's this for the current widget, which allows
+you to display your own custom type of widget focus.)
