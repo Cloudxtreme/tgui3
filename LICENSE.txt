@@ -1,17 +1,39 @@
-Copyright (c) 2015 Nooskewl
+At Nooskewl, we believe if you buy a game (or any piece of software), you should
+not be restricted in how you can use it. Digital goods are unique though,
+because you can make copies and it costs you nothing. While sharing is great, if
+someone's job (what they spend most of their time doing) is making games, they
+deserve (and NEED) to be compensated. The license for this game is what we
+believe is the best balance between your rights and freedoms and ours. You can
+do almost anything you want with the game. You can even give family members
+copies. But you can't give copies to anyone outside your family. This allows us
+to sell the game and make money for our hard work, and frees you from the
+hassles of restrictive licenses.
 
-This software is provided 'as-is', without any express or implied
-warranty. In no event will the authors be held liable for any damages
-arising from the use of this software.
+We allow you to make derivatives and distribute those as long as they bear no
+resemblance to and don't use too similar a name as the original. This mainly
+applies to the source code, which we provide for everyone who has a license for
+the game. The source code is also available freely for educational purposes. We
+just ask that you do not distribute copies and that if you're downloading and
+building it to play the game, you purchase a license.
 
-Permission is granted to anyone to use this software for any purpose,
-including commercial applications, and to alter it and redistribute it
-freely, subject to the following restrictions:
+We believe this is the best compromise for everyone involved. It allows us to
+earn money which allows us to build high quality games, and gives you near 100%
+freedom. So enjoy the ability to install on as many devices as you want, give
+your family free copies and always have the code in case the game doesn't work
+on the computers of the future. It's what we want for ourselves, so it's what
+we're giving to you if you buy a license.
 
-1. The origin of this software must not be misrepresented; you must not
-   claim that you wrote the original software. If you use this software
-   in a product, an acknowledgement in the product documentation would be
-   appreciated but is not required.
-2. Altered source versions must be plainly marked as such, and must not be
-   misrepresented as being the original software.
-3. This notice may not be removed or altered from any source distribution.
+Summary:
+
+* You can access the code freely for educational purposes
+* You can make copies of the source and binaries for yourself and your family
+  and install on any number of devices if you buy a license
+* You can make derivatives of the game and distribute them if you have a
+  paid license
+* You can never distribute copies of source or binaries outside of your family
+* Your derivatives cannot bear a close resemblance to or have a similar name
+  as the original, such as using the same art assets
+* If you're downloading the source to build it and play it, you need to buy
+  a license
+
+- Nooskewl Team
