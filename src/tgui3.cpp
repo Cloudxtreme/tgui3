@@ -569,8 +569,18 @@ TGUI_Widget::~TGUI_Widget()
 
 void TGUI_Widget::set_parent(TGUI_Widget *widget)
 {
+	if (parent) {
+		std::vector<TGUI_Widget *>::iterator it;
+		if ((it = std::find(parent->children.begin(), parent->children.end(), this)) != parent->children.end()) {
+			parent->children.erase(it);
+		}
+	}
+
 	parent = widget;
-	parent->children.push_back(this);
+
+	if (parent) {
+		parent->children.push_back(this);
+	}
 }
 
 void TGUI_Widget::set_padding_left(int padding)
